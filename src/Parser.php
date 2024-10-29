@@ -15,7 +15,8 @@ class Parser
     {
         $symbols = $this->lexicalAnalyze($query);
         $tree = $this->EXP0($symbols, 0);
-        throw new \Exception('Not implemented.');
+        
+        return $this->optimizeTree($tree);
     }
 
     /**
@@ -236,5 +237,37 @@ class Parser
         } else {
             return null;
         }
+    }
+
+    /**
+     * ツリー構造の最適化
+     */
+    private function optimizeTree($tree): INode
+    {
+        if (!is_array($tree)) {
+            return null;
+        }
+        if ($tree['type'] === 'TERM') {
+            return new ValueNode($tree['value'][0]['value']);
+        }
+        $values = [];
+        foreach ($tree['value'] as $v) {
+            $opt = $this->optimizeTree($v);
+            if (isset($opt)) {
+                $values[] = $opt;
+            }
+        }
+        if (count($values) === 0) {
+            return null;
+        }
+        if ($tree['type'] !== 'NOT' && count($values) === 1) {
+            return $values[0];
+        }
+        $ret = [
+            'type' => $tree['type'],
+            'value' => $values,
+        ];
+
+        return $ret;
     }
 }
