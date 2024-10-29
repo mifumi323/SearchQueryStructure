@@ -1,0 +1,23 @@
+{
+    "name": "mifumi323/search-query-structure",
+    "description": "検索構文とかに使われるAND/OR/括弧などの構文解析をするやつ",
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "^11.4"
+    },
+    "require": {
+        "php": ">=8.2"
+    },
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "mifumi323",
+            "email": "mifumi323@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Mifumi323\\SearchQueryStructure\\": "src/"
+        }
+    }
+}
