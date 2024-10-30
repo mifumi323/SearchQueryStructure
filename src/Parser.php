@@ -104,7 +104,6 @@ class Parser
         }
 
         return [
-            'symbol' => 'EXP0',
             'type' => 'AND',
             'next' => $next,
             'value' => $values,
@@ -131,7 +130,6 @@ class Parser
         }
 
         return [
-            'symbol' => 'EXP1',
             'type' => 'OR',
             'next' => $next,
             'value' => $values,
@@ -158,7 +156,6 @@ class Parser
         }
 
         return [
-            'symbol' => 'EXP2',
             'type' => 'AND',
             'next' => $next,
             'value' => $values,
@@ -179,7 +176,6 @@ class Parser
             $next = $exp4['next'];
 
             return [
-                'symbol' => 'EXP3',
                 'type' => 'NOT',
                 'next' => $next,
                 'value' => $values,
@@ -193,7 +189,6 @@ class Parser
             $next = $exp4['next'];
 
             return [
-                'symbol' => 'EXP3',
                 'type' => 'EXP',
                 'next' => $next,
                 'value' => $values,
@@ -210,7 +205,6 @@ class Parser
             $next++;
 
             return [
-                'symbol' => 'EXP4',
                 'type' => 'TERM',
                 'next' => $next,
                 'value' => $values,
@@ -229,7 +223,6 @@ class Parser
             $next++;
 
             return [
-                'symbol' => 'EXP4',
                 'type' => 'EXP',
                 'next' => $next,
                 'value' => $values,
@@ -245,7 +238,7 @@ class Parser
     private function optimizeTree($tree): INode
     {
         if (!is_array($tree)) {
-            return null;
+            throw new \Exception('Invalid tree');
         }
         if ($tree['type'] === 'TERM') {
             return new ValueNode($tree['value'][0]['value']);
@@ -258,15 +251,16 @@ class Parser
             }
         }
         if (count($values) === 0) {
-            return null;
+            throw new \Exception('Invalid values');
         }
         if ($tree['type'] !== 'NOT' && count($values) === 1) {
             return $values[0];
         }
-        $ret = [
-            'type' => $tree['type'],
-            'value' => $values,
-        ];
+        $ret = match ($tree['type']) {
+            'AND' => new AndNode($values),
+            'OR' => new OrNode($values),
+            'NOT' => new NotNode($values[0]),
+        };
 
         return $ret;
     }
