@@ -13,9 +13,12 @@ class Parser
      */
     public function parse(string $query): INode
     {
+        if ($query === '') {
+            return new NullNode();
+        }
         $symbols = $this->lexicalAnalyze($query);
         $tree = $this->EXP0($symbols, 0);
-        
+
         return $this->optimizeTree($tree);
     }
 

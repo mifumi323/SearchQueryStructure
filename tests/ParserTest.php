@@ -95,11 +95,10 @@ class ParserTest extends TestCase
     public function testParseEmpty()
     {
         $parser = new Parser(true);
-        $this->expectExceptionMessage('Invalid tree');
         $actual = $parser->parse('');
-        // 途中までのパース結果を返さず、例外を出す。
-        // $expected = [];
-        // $this->assertSame($expected, $actual->toArray());
+        $expected = [];
+        $this->assertInstanceOf(NullNode::class, $actual);
+        $this->assertSame($expected, $actual->toArray());
     }
 
     public function testParseOrWithoutLeftValue()
